@@ -1,7 +1,7 @@
 import numpy as np
 import sympy as sp
-import math 
-from fractions import Fraction as fr 
+import math
+from fractions import Fraction as fr
 
 known_fibonacci={0:0, 1:1}
 known_square = {1:1}
@@ -10,45 +10,45 @@ known_triangle_and_square = {1:1,2:36}
 
 
 def nth_fibonacci(n):
-    """Originally from Think Python 2. 
+    """Originally from Think Python 2.
     returns the nth fibonacci number
     Uses a dictionary to store know fibonacci
     numbers to exponentially speed up computation"""
     if n in known_fibonacci:
         return known[n]
-    
+
     result = nth_fibonacci(n-1)+nth_fibonacci(n-2)
     known_fibonacci[n] = result
     return result
 
-# Function to demonstrate printing pattern triangle 
-def triangle(n): 
+# Function to demonstrate printing pattern triangle
+def triangle(n):
     """ripped from geeks for geeks, Using/modding this to
     provide geometric proof of a number being a triangle."""
-    # number of spaces 
+    # number of spaces
     k = 2*n - 2
-  
-    # outer loop to handle number of rows 
-    for i in range(0, n): 
-      
-        # inner loop to handle number spaces 
-        # values changing acc. to requirement 
-        for j in range(0, k): 
-            print(end=" ") 
-      
-        # decrementing k after each loop 
+
+    # outer loop to handle number of rows
+    for i in range(0, n):
+
+        # inner loop to handle number spaces
+        # values changing acc. to requirement
+        for j in range(0, k):
+            print(end=" ")
+
+        # decrementing k after each loop
         k = k - 1
-      
-        # inner loop to handle number of columns 
-        # values changing acc. to outer loop 
-        for j in range(0, i+1): 
-          
-            # printing stars 
-            print("* ", end="") 
-      
-        # ending line after each row 
-        print("\r") 
-  
+
+        # inner loop to handle number of columns
+        # values changing acc. to outer loop
+        for j in range(0, i+1):
+
+            # printing stars
+            print("* ", end="")
+
+        # ending line after each row
+        print("\r")
+
 def print_triangle_number(n):
     if n in known_triangles.values():
         triangle(n)
@@ -77,7 +77,7 @@ def nth_triangle_and_square(n):
     """I'll figure this out somehow"""
     if n in known_triangle_and_squares:
         return known[n]
-    
+
     result = nth_fibonacci(n-1)+nth_fibonacci(n-2)
     known_fibonacci[n] = result
     return result
