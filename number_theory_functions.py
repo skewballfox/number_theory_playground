@@ -6,7 +6,7 @@ from fractions import Fraction as fr
 known_fibonacci={0:0, 1:1}
 known_square = {1:1}
 known_triangle = {0:0,1:1,2:3}
-known_square_and_triangles = {1:1,2:36}
+known_triangle_and_square = {1:1,2:36}
 
 
 def nth_fibonacci(n):
@@ -51,7 +51,10 @@ def triangle(n):
   
 def print_triangle_number(n):
     if n in known_triangles.values():
-        triangle()
+        triangle(n)
+    else:
+        print ("not a triangle")
+
 def nth_triangle(n):
     """Taking the same strategy as the nth fibonacci
     generates a dictionary of known triangles"""
@@ -69,6 +72,24 @@ def nth_square(n):
     result = nth_square(n-1)+(2*(n-1)+1)
     known_square[n]=result
     return result
+
+def nth_triangle_and_square(n):
+    """I'll figure this out somehow"""
+    if n in known_triangle_and_squares:
+        return known[n]
+    
+    result = nth_fibonacci(n-1)+nth_fibonacci(n-2)
+    known_fibonacci[n] = result
+    return result
+
+def euclidean_algorithm(x,y):
+     m= max(x,y)
+     n= min(x,y)
+     while n != 0:
+        r=m%n
+        m=n
+        n=r
+     return m
 
 if __name__=="__main__":
     nth_triangle(20)
