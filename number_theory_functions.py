@@ -82,19 +82,76 @@ def nth_triangle_and_square(n):
     known_fibonacci[n] = result
     return result
 
-def euclidean_algorithm(x,y):
+def euclidean_algorithm(x,y,verbose=True):
+     """in the euclidean algorithm given 2 values x and y, let m and n be the
+     larger and smaller value respectively. there exists a q and r such that
+     m=(q x n)+r. Then, so long as n is not 0, m is the previous value for n 
+     and n is the previous value for r."""
      m= max(x,y)
      n= min(x,y)
+     if verbose is True:
+         print("Finding the gcd using the euclidean algorithm") 
      while n != 0:
+        q=m//n
         r=m%n
+        if verbose is True:
+            print(m , "= (", q, " x ", n, ") + ", r)
         m=n
         n=r
+     if verbose is True:
+         print ("hence, the gcd is ", m)
      return m
 
+def smallest_linear_solution(x,y,verbose=True):
+     """given a linear equation ax+by, the smallest positive solution is equal
+     to the gcd(a,b). the following is a way of solving for that value."""
+     known_subs={}#this is going to 
+     m= max(x,y)
+     m_1=m
+     n= min(x,y)
+     n_1=n
+     a,b,u,v=sp.symbols('a b u v')
+     known_subs[m]=a
+     known_subs[n]=b
+     if verbose is True:
+         print("Finding the smallest possible solution to {}x+{}y".format(x,y)) 
+     while n != 0:
+        q=m//n
+        r=m%n
+        if r is 0:
+            m=n
+            break
+        expr=u-q*v
+        expr=expr.subs([(u,known_subs[m]),(v,known_subs[n])])
+        known_subs[r]=expr
+        if verbose is True:
+            print(r , "= ",known_subs[r])
+        m=n
+        n=r
+     if verbose is True:
+         print ("hence, the smallest linear solution is: ", known_subs[n], " = ", n)
+         print ("where a = ", m_1, " and b = ",n_1)
+     if verbose is True:
+         check=((known_subs[n]).subs([(a,m_1),(b,n_1)])==m)
+         if check is True:
+             print("QED")
+         else:
+             print("oops, something fucked up")
+
+     return known_subs[n],m
+
+def lcm(a,b):
+    gcd=euclidean_algorithm(a,b,False)
+    m = max(a,b)
+    n = min(a,b)
+    q=m//gcd
+    lcm=q*n
+    return lcm
+
+
 if __name__=="__main__":
-    nth_triangle(20)
-    nth_square(20)
-    print ("the first 20 triangles are: ")
-    print(sorted(known_triangle.items(), key=lambda x: x[0]))
-    print ("the first 20 squares are: ")
-    print(sorted(known_square.items(), key=lambda x: x[0]))
+    sp.init_printing
+    sls_a=smallest_linear_solution(12345,67890)
+    print(sls_a)
+    sls_b=smallest_linear_solution(54321,9876)
+    print(sls_b)
