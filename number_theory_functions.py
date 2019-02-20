@@ -85,12 +85,12 @@ def nth_triangle_and_square(n):
 def euclidean_algorithm(x,y,verbose=True):
      """in the euclidean algorithm given 2 values x and y, let m and n be the
      larger and smaller value respectively. there exists a q and r such that
-     m=(q x n)+r. Then, so long as n is not 0, m is the previous value for n 
+     m=(q x n)+r. Then, so long as n is not 0, m is the previous value for n
      and n is the previous value for r."""
      m= max(x,y)
      n= min(x,y)
      if verbose is True:
-         print("Finding the gcd using the euclidean algorithm") 
+         print("Finding the gcd of {} and {} using the euclidean algorithm".format(x,y))
      while n != 0:
         q=m//n
         r=m%n
@@ -105,7 +105,7 @@ def euclidean_algorithm(x,y,verbose=True):
 def smallest_linear_solution(x,y,verbose=True):
      """given a linear equation ax+by, the smallest positive solution is equal
      to the gcd(a,b). the following is a way of solving for that value."""
-     known_subs={}#this is going to 
+     known_subs={}#this is going to
      m= max(x,y)
      m_1=m
      n= min(x,y)
@@ -114,7 +114,7 @@ def smallest_linear_solution(x,y,verbose=True):
      known_subs[m]=a
      known_subs[n]=b
      if verbose is True:
-         print("Finding the smallest possible solution to {}x+{}y".format(x,y)) 
+         print("Finding the smallest possible solution to {}x+{}y".format(x,y))
      while n != 0:
         q=m//n
         r=m%n
@@ -148,10 +148,73 @@ def lcm(a,b):
     lcm=q*n
     return lcm
 
+def all_solutions(x,y,expr,g):
+    m=max(x,y)
+    n=min(x,y)
+    a,b,k,u,v=sp.symbols('a b k u v')
+    print("finding the first 100 solutions for: ")
+    linear_equation=m*a+n*b
+    print(linear_equation)
+    substitutions={a:k*(n//g),b:k*(m//g)}
+    components=expr.args
+    print(components)
+    solution_form={}
+    solution_y=linear_equation
+    for expression in components:
+        if expression.args[1].name is 'a':
+            solution_form['x']=(expression.args[0]+((expression.args[1]).subs(substitutions)))
+        elif expression.args[1].name is 'b':
+            solution_form['y']=(expression.args[0]-((expression.args[1]).subs(substitutions)))
+    print("via the linear equation theorem, all possible solutions can be find via the formulas:")
+    print(solution_form['x']," ", solution_form['y'])
+    print ("first 100 solution pairs: ")
+    for i in range (100):
+        #print(linear_equation.subs([(a,solution_form['x'].subs(k,i)),(b,solution_form['y'].subs(k,i))]))
+        check=linear_equation.subs([(a,solution_form['x'].subs(k,i)),(b,solution_form['y'].subs(k,i))])==g
+        if check is True:
+            print("( ", solution_form['x'].subs(k, i)," , ", solution_form['y'].subs(k, i), " )")
+
+
 
 if __name__=="__main__":
     sp.init_printing
-    sls_a=smallest_linear_solution(12345,67890)
-    print(sls_a)
-    sls_b=smallest_linear_solution(54321,9876)
-    print(sls_b)
+    """x,y=37,47
+    euclidean_algorithm(x,y)
+    sls_a,g=smallest_linear_solution(x,y)
+    all_solutions(x,y,sls_a,g)
+    """
+    j=0
+    k=0
+    m=0
+    m_numbers={}
+    m_prime_factorizations={}
+    m_prime_numbers={}
+    while k<1:
+         print("what")
+         if j not in m_numbers.keys():
+             m_numbers[j]=((4*j)+1)
+         i=j
+         m_prime_factors=[]
+         while i != 0:
+             if m_numbers[j]%m_numbers[i]==0:
+                 if i!=j:
+                     m_prime_factors.append(m_numbers[i])
+             i-=1
+         if not m_prime_factors:
+             print("m prime number:")
+             print (m_numbers[j])
+             m_prime_numbers[m]=m_numbers[j]
+             m+=1
+         elif len(m_prime_factors)==4:
+             print("found it!")
+             print(m_prime_factors)
+             print(m_numbers[j])
+             k+=1;
+         else:
+             print ("m factorable number: ")
+             print (m_numbers[j])
+             print (m_prime_factors)
+             m_prime_factorizations[m_numbers[j]]=m_prime_factors
+
+         j+=1;
+print (m_prime_numbers)
