@@ -82,13 +82,18 @@ def nth_triangle_and_square(n):
     known_fibonacci[n] = result
     return result
 
-def euclidean_algorithm(x,y,verbose=True):
+def euclidean_algorithm(a,b,verbose=True):
      """in the euclidean algorithm given 2 values x and y, let m and n be the
      larger and smaller value respectively. there exists a q and r such that
      m=(q x n)+r. Then, so long as n is not 0, m is the previous value for n
      and n is the previous value for r."""
-     m= max(x,y)
-     n= min(x,y)
+     m= max(abs(a),abs(b))
+     n= min(abs(a),abs(b))
+     x=0
+     y=1
+     last_x=1
+     last_y=0
+     temp=0
      if verbose is True:
          print("Finding the gcd of {} and {} using the euclidean algorithm".format(x,y))
      while n != 0:
@@ -98,17 +103,28 @@ def euclidean_algorithm(x,y,verbose=True):
             print(m , "= (", q, " x ", n, ") + ", r)
         m=n
         n=r
+        temp=x
+        x=last_x-q*x
+        last_x=temp
+        temp=y
+        y=last_y-(q*y)
+        last_y=temp
      if verbose is True:
          print ("hence, the gcd is ", m)
+         print(last_x,last_y)
+     while(last_x<0):
+         last_x=last_x+a
+         last_y=last_y+b
+     print(last_x,last_y)
      return m
 
 def smallest_linear_solution(x,y,verbose=True):
      """given a linear equation ax+by, the smallest positive solution is equal
      to the gcd(a,b). the following is a way of solving for that value."""
      known_subs={}#this is going to
-     m= max(x,y)
+     m= abs(x)
      m_1=m
-     n= min(x,y)
+     n= abs(y)
      n_1=n
      a,b,u,v=sp.symbols('a b u v')
      known_subs[m]=a
@@ -146,7 +162,7 @@ def lcm(a,b):
     n = min(a,b)
     q=m//gcd
     lcm=q*n
-    return lcm
+    return abs(lcm)
 
 def all_solutions(x,y,expr,g):
     m=max(x,y)
@@ -174,7 +190,69 @@ def all_solutions(x,y,expr,g):
         if check is True:
             print("( ", solution_form['x'].subs(k, i)," , ", solution_form['y'].subs(k, i), " )")
 
+def extended_euclidean(a,b,verbose=True):
+    """
+    efficient algorithm for finding all possible solutions to ax+by=gcd(a,b)
+    """
+    x=0
+    y=1
+    last_x=1
+    last_y=0
+    temp=0
+    temp_a=a
+    temp_b=b
+    while b!=0:
+        q=a//b
+        r=a%b
+        a=b
+        b=r
+        temp=x
+        x=last_x-q*x
+        last_x=temp
+        temp=y
+        y=last_y-(q*y)
+        last_y=temp
+    while(last_x<0):
+        last_x=last_x+temp_b
+        last_y=last_y-temp_a
+    print(a,last_x,last_y)
 
+def linear_congruence_theorem(a,c,m,verbose=True):
+    """
+    this is to find all the solutions to the congruence $ax \\equiv c(mod m)
+    if the gcm doesn't divide c then the congruence has no solutions
+    if it does then the congruence has exactly g incongruent solutions
+    """
+    g=euclidean_algorithm(a,m,verbose)
+    if verbose:
+        print("checking for the existence of solutions")
+    if c%g!=0:
+        if verbose:
+            print("The congruence $ax \\equiv c (mod m)$ has no solutions")
+    else:
+        if verbose:
+            print("g solutions exists, finding the smallest solution",
+            "to the equation au+mv=g")
+        solution,temp=smallest_linear_solution(a,-m,verbose)
+
+        components=(solution.args[0].args),solution.args[1].args
+
+        #the below if statement is to break down the equation into its
+        #basic components given we don't know the order of the components
+        #given how numpy handles symbolic expressions
+
+        if sp.symbols('a') in components[0]:
+            a_components,b_components=components[0],components[1]
+        else:
+            b_components,a_components=components[0],components[1]
+        if solution.subs([(sp.symbols('a'),a),(sp.symbols('b'),m)])==g:
+            x_zero=(c*b_componets[0])/g
+            print(x_zero)
+        elif solution.subs([(sp.symbols('a'),m),(sp.symbols('b'),a)])==g:
+            x_zero=(c*a_components[0])/g
+            print(x_zero)
+        else:
+            print()
 
 if __name__=="__main__":
     sp.init_printing
@@ -183,38 +261,7 @@ if __name__=="__main__":
     sls_a,g=smallest_linear_solution(x,y)
     all_solutions(x,y,sls_a,g)
     """
-    j=0
-    k=0
-    m=0
-    m_numbers={}
-    m_prime_factorizations={}
-    m_prime_numbers={}
-    while k<1:
-         print("what")
-         if j not in m_numbers.keys():
-             m_numbers[j]=((4*j)+1)
-         i=j
-         m_prime_factors=[]
-         while i != 0:
-             if m_numbers[j]%m_numbers[i]==0:
-                 if i!=j:
-                     m_prime_factors.append(m_numbers[i])
-             i-=1
-         if not m_prime_factors:
-             print("m prime number:")
-             print (m_numbers[j])
-             m_prime_numbers[m]=m_numbers[j]
-             m+=1
-         elif len(m_prime_factors)==4:
-             print("found it!")
-             print(m_prime_factors)
-             print(m_numbers[j])
-             k+=1;
-         else:
-             print ("m factorable number: ")
-             print (m_numbers[j])
-             print (m_prime_factors)
-             m_prime_factorizations[m_numbers[j]]=m_prime_factors
-
-         j+=1;
-print (m_prime_numbers)
+    extended_euclidean(893,-2432)
+    #linear_congruence_theorem(943,381,2576)
+    #linear_congruence_theorem(893,266,2432)
+    euclidean_algorithm(893,-2432)

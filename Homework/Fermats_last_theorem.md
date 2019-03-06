@@ -1,3 +1,4 @@
+Joshua Ferguson
 # Fermat's last theorem
 
 ## 1.
